@@ -1,3 +1,2 @@
 # PiProject
-CSC 132 Final Pi Project
-
+Repository for the final project of CSC 132.
