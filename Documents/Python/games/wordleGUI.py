@@ -1,19 +1,157 @@
 from tkinter import *
+from enchant import Dict
+import urllib.request
 
-window = Tk()
-window.title("Wordle")
-window.geometry("550x500")
-window.configure(bg = "black")
+dictionary = Dict("en_US")
 
-######THE WORD YOU ARE GUESSING#####
-word = "balls"
-wordlist = list(word)
+
+######IF YOU WANT THE WORD TO BE RANDOM THEN MAKE IT TRUE######
+random = True
+######THE WORD YOU ARE GUESSING #####
+
+#url that has 10000 random words
+word_url = "https://www.mit.edu/~ecprice/wordlist.10000"
+
+#opens the url
+response = urllib.request.urlopen(word_url)
+#makes it a sentence in python
+long_txt = response.read().decode()
+#makes it a list
+words = long_txt.splitlines()
+
+import random
+
+def randomwordgen():
+    
+    #globals
+    global ranword
+    global wordlist
+    global word
+
+    #chooses a random word from the list of 10000 words
+    ranword = random.choice(words)
+    
+    #makes sure the word is 5 letters
+    while len(ranword) > 5 or len(ranword) < 5:
+        ranword = random.choice(words)
+        word = ranword
+        wordlist = list(word)
+        print(word)
+
+############################################################################################################
 
 # i is for the entry bars, as i increases the bars go down two columns
 i = 1
 
 #tries
 tries = 1
+
+#destroys the frame
+def destroyfunction():
+    #globals
+    global i
+    global tries
+    #resets the tries and columns
+    i = 1
+    tries = 1
+
+    #destroys window
+    window.destroy()
+
+    #chooses new word
+    randomwordgen()
+
+    #creates new window
+    frame()
+#creates the frame
+def frame():
+
+    global window
+
+    window = Tk()
+    window.title("Wordle")
+    window.geometry("550x500")
+    window.configure(bg = "black")
+    
+    alternator()
+
+    window.mainloop()
+
+############################################################################################################
+
+#the actual entry bar and guess
+def alternator():
+    
+    global entry1
+    
+    entry1 = Entry (bg = "dark gray")
+    entry1.insert(END, "")
+    entry1.grid(row = i, column = 1)
+
+    global button1
+    button1 = Button (text = "Guess", bg = "dark gray", command = lambda: (test()))
+    button1.grid(row = i, column = 2, sticky = N + S + E + W)
+    
+
+#the main game
+def Guessgetter(entry):
+
+    #globals
+    global i
+    global tries
+    global q
+
+    q = 0
+
+    while q < 5:
+        #for green letters
+        if guesslist[q] == wordlist[q]:
+            label1 = Label (text = (guesslist[q]), bg = "black", fg = "green")
+            label1.grid(row = i, column = q+3)
+            
+        #for yellow letters, refers to true() for calculations
+        elif true() == True:
+            label1 = Label (text = (guesslist[q]), bg = "black", fg = "yellow")
+            label1.grid(row = i, column = q+3)
+            
+        #grey letters
+        else:
+            label1 = Label (text = (guesslist[q]), bg = "black", fg = "white")
+            label1.grid(row = i, column = q+3)
+
+        #selects next letter
+        q += 1
+
+    #increases column
+    i += 2
+
+    #increases tries
+    tries += 1
+    
+
+    #if you guess the word
+    if word == guess:
+        button1.destroy()
+        Button2 = Button (text = ("You got the word!. Click to play again."),
+                          bg = "dark gray", fg = "black", command = lambda:destroyfunction())
+        Button2.grid(row = i + 5, column = i +7, sticky = S + E)
+    
+    #if you run out of tries
+    elif tries == 7:
+        Button2 = Button (text = ("You ran out of tries. Click to try another word."),
+                          bg = "dark gray", fg = "black", command = lambda:destroyfunction())
+        Button2.grid(row = i + 5, column = i +7, sticky = S + E)
+
+        button1.destroy()
+
+    #if you are still playing; deletes the guess button and creates a new guess button and entry bar
+    else:
+        #deletes guessbutton
+        button1.destroy()
+
+        alternator()
+
+############################################################################################################
 
 #calculates the placement of yellow letters
 def true():
@@ -22,78 +160,42 @@ def true():
                 return True
                 break
 
-#the main game
-def Guessgetter(entry):
+#destroys the label in test() after 3 seconds
+def destroy_label():
+    label2.destroy()
+
+#tests the word to make sure it is real and 5 letters
+def test():
 
     #globals
-    global q
     global guesslist
     global guess
-
-    q = 0
-
+    
     #takes the input from the entry and assigns it as your guess
-    guess = entry.get()
+    guess = entry1.get()
+
     #turns your guess into a list
     guesslist = list(guess)
-    #prints guess for debug
-    print(guess)
 
-    while q < 5:
-        #for green letters
-        if guesslist[q] == wordlist[q]:
-            label1 = Label (text = (guesslist[q]), bg = "black", fg = "green")
-            label1.grid(row = i-1, column = q+3)
-            print(guesslist[q], end = ' ')
-        #for yellow letters, refers to true() for calculations
-        elif true() == True:
-            label1 = Label (text = (guesslist[q]), bg = "black", fg = "yellow")
-            label1.grid(row = i-1, column = q+3)
-            print(guesslist[q], end = ' ')
-        #grey letters
-        else:
-            label1 = Label (text = (guesslist[q]), bg = "black", fg = "white")
-            label1.grid(row = i-1, column = q+3)
-            print(guesslist[q], end = ' ')
-        q += 1
+    #if the left of your guess is not 5 letters or a real word
+    if len(guesslist) > 5 or len(guesslist) < 5 or dictionary.check(guess) == False:
 
-    #if you guess the word
-    if word == guess:
-        button1.destroy()
-    #if you run out of tries
-    elif tries == 6:
-        label1 = Label (text = ("you ran out of tries :("))
-        label1.grid(row = i + 5, column = i +7, sticky = S + E)
+        global label2
+
+        label2 = Label (text = "Your guess has to be 5 letters long and a real word.", bg = "dark gray", fg = "black")
+        label2.grid(row = i + 10, column = i + 10, sticky = N + S + E + W)
+
+        #after 3 seconds destroy the label
+        window.after(3000, destroy_label)
         
         button1.destroy()
-    #if you are still playing; deletes the guess button and creates a new guess button and entry bar
-    else:
-        #deletes guessbutton
-        button1.destroy()
-
+        entry1.destroy()
         alternator()
-        
-#the actual entry bar and guess
-def alternator():
 
-    #globals
-    global i
-    global tries
-    
-    global entry1
-    entry1 = Entry (bg = "dark gray")
-    entry1.insert(END, "")
-    entry1.grid(row = i, column = 1)
+    else:
+       Guessgetter(entry1)
 
-    global button1
-    button1 = Button (text = "Guess", bg = "dark gray", command = lambda: (Guessgetter(entry1)))
-    button1.grid(row = i, column = 2, sticky = N + S + E + W)
+############################################################################################################
 
-    #increases tries
-    tries += 1
-    #increases column
-    i += 2
-
-alternator()
-
-
+randomwordgen()
+frame()
