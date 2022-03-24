@@ -17,11 +17,12 @@ def randomwordgen():
     ranword = random.choice(words)
     
     #makes sure the word is 5 letters
-    while len(ranword) > 5 or len(ranword) < 5 or dictionary.check(ranword) ==False:
+    while len(ranword) > 5 or len(ranword) < 5 or dictionary.check(ranword) == False:
         
         ranword = random.choice(words)
         word = ranword
         wordlist = list(word)
+
         print(word)
 
 ############################################################################################################
@@ -214,4 +215,5 @@ if randomword == True:
     randomwordgen()
 else:
     word = ""
+    
 frame()
