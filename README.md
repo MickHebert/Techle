@@ -1,5 +1,4 @@
-# Group Project: 
-Techle
+# Group Project Name: Techle
 Repository for the final project of CSC 132.
 
 # Team Name
