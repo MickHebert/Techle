@@ -1,7 +1,9 @@
-# PiProject
+# Group Project: 
+Techle
 Repository for the final project of CSC 132.
 
-# Team Name Here
+# Team Name
+Cool Coders
 
 # Group Members
 - Michael Hebert
