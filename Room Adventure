@@ -171,13 +171,15 @@ class Game(Frame):
     def setRoomImage(self):
         if(Game.currentRoom == None):
             #if dead, set the skull image
-            Game.img = PhotoImage(file="skull.gif")
+            Game.img = PhotoImage(file="images/skull.gif") # THIS WAS MODIFIED BY Zakaria
         else:
             #otherwise grab the image for the current room
             Game.img = PhotoImage(file=Game.currentRoom.image)
-            #display the image on the left of the GUI
-            Game.image.config(image=Game.img)
-            Game.image.image = Game.img
+        
+        # THIS WAS MODIFIED BY Zakaria
+        # display the image on the left of the GUI
+        Game.image.config(image=Game.img)
+        Game.image.image = Game.img
 
     #sets the status displayed on the right of the GUI
     def setStatus(self, status):
