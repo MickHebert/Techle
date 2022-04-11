@@ -243,6 +243,22 @@ class Game(Frame):
                     Game.currentRoom.exits[noun]
 # set the response (success)
                     response = "Room changed."
+            elif (verb == "take"):
+# set a default response
+                response = "I don't see that item."
+# check for valid grabbable items in the current
+# room
+                for grabbable in Game.currentRoom.grabbables:
+# a valid grabbable item is found
+                    if (noun == grabbable): 
+# add the grabbable item to the player's inventory
+                        Game.inventory.append(grabbable)
+# remove the grabbable item from the room
+                        Game.currentRoom.delGrabbable(grabbable)
+# set the response (success)
+                        response = "Item grabbed."
+# no need to check any more grabbable items
+                        break
 # the verb is: look
             elif (verb == "look"):
 # set a default response
@@ -267,12 +283,16 @@ class Game(Frame):
             elif (verb == "use"):
                 response = "This item cannot be used."
                 if (noun == "key"):
-                    response = input("Which color door would you like to usse it on? ")
-                    if response == "green":
+                    response = input("Which color door would you like to use it on? ")
+                    if (response == "green"):
                         return "You have found the treasure and made your grandfather proud! Congratulations"
-                    elif response == "blue" or "red":
-                        return "You unlocked the wrong door! Your search for treasure is over!"
+                    elif (response == "blue" or "red"):
                         Game.img = PhotoImage(file="skull.gif")
+                        print("You unlocked the wrong door! Your search for treasure is over!")
+                        pass
+                    else:
+                        print("Please put in green, blue, or red.")
+                        response = input("Which color door would you like to use it on? ")
                         
 # set a default response
                 response = "I don't see that item."
