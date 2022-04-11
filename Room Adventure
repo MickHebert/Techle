@@ -5,19 +5,7 @@
 #################################################################
 from tkinter import *
 
-#Game Story: You are on a search for treasure.
-#Pick up the key from the table.
-#Reading the book on the bookshelf gives a clue about where the
-#treasure in the game is, as well as a warning about the danger.
-#The golden statue points downwards for another clue about where the
-#treasure lies in the house.
-#Next to the door in the basement is a locked box, which you must
-#use the key picked up from the table to open.
-#Once you open the box, you discover the treasure inside, and the
-#game ends.
-#Instructions to win: Look table, take key, go south, look bookshelf,
-#take book, read book, go north, go east, look statue, go south,
-#look dresser, use key, enter "yes"
+#Game Story: You are on a search for grandpa's treasure after his death.
 
 # the room class
 class Room:
@@ -81,15 +69,15 @@ class Room:
         self._grabbables.remove(item)
 
     def __str__(self):
-#the room name
+        #the room name
         s = "You are in {}.\n".format(self.name)
-#items in the room
+        #items in the room
         s += "You see: "
 
         for item in self.items.keys():
             s += item + " "
         s += "\n"
-#exits from the room
+        #exits from the room
         s += "Exits: "
 
         for exit in self.exits.keys():
@@ -99,54 +87,65 @@ class Room:
 
 # the game class
 class Game(Frame):
-# the constructor
+    # the constructor
     def __init__(self, parent):
-# call the constructor in the superclass
+        #call the constructor in the superclass
         Frame.__init__(self, parent)
-# creates the rooms
+    #creates the rooms
     def createRooms(self):
-        r1 = Room("Kitchen", "images/room1.gif")
-        r2 = Room("Living Room", "images/room2.gif")
-        r3 = Room("Library", "images/room3.gif")
-        r4 = Room("Basement", "images/room4.gif")
+        global r4
+        r1 = Room("the kitchen", "images/room1.gif")
+        r2 = Room("the library", "images/room2.gif")
+        r3 = Room("the study", "images/room3.gif")
+        r4 = Room("the basement", "images/room4.gif")
 
         # add exits to room 1
         r1.addExit("east", r2) # to the east of room 1 is room 2
         r1.addExit("south", r3)
         # add grabbables to room 1
-        r1.addGrabbable("key")
+        r1.addGrabbable("paper")
         # add items to room 1
-        r1.addItem("apron", "The apron is covered in stains, someone must have cooked alot with this.")
-        r1.addItem("table", "It is made of oak. A golden key rests on it.")
+        r1.addItem("apron", "The apron is covered in stains, someone must have cooked alot with this. There is something in the pocket.")
+        r1.addItem("pocket", "The pocket contains a crumpled piece of paper.")
+        r1.addItem("oven", "It is black and rusty.")
         # add exits to room 2
         r2.addExit("west", r1)
         r2.addExit("south", r4)
+        #add grabbables to room 2
+        r2.addGrabbable("red_book")
+        r2.addGrabbable("green_book")
+        r2.addGrabbable("blue_book")
+        r2.addGrabbable("key")
         # add items to room 2
-        r2.addItem("rug", "It is nice and Indian. It also needs to be vacuumed.")
+        #the green book is the book with the key inside
+        r2.addItem("green_book", "It is very dusty.")
+        r2.addItem("red_book", "It has a gold symbol on the front. It is very beautiful")
+        r2.addItem("blue_book", "It has a silver symbol on it.")
         r2.addItem("fireplace", "It is full of ashes.")
 
         # add exits to room 3
         r3.addExit("north", r1)
-        r3.addExit("east", r4)
+        r3.addExit("down", r4)
         # add grabbables to room 3
-        r3.addGrabbable("book")
+        r3.addGrabbable("statue")
         # add items to room 3
-        r3.addItem("bookshelves", "They are empty. Go figure.")
-        r3.addItem("statue", "There is nothing special about it.")
-        r3.addItem("desk", "The statue is resting on it. So is a book.")
+        r3.addItem("statue", "It is in the likeness of a man on as set of stairs, and he points downwards.")
+        r3.addItem("fireplace", "It is full of ashes.")
         # add exits to room 4
-        r4.addExit("north", r2)
-        r4.addExit("west", r3)
+        r4.addExit("northeast", r2)
+        r4.addExit("northwest", r3)
         r4.addExit("south", None) # DEATH!
-        # add grabbables to room 4
-        r4.addGrabbable("6-pack")
         # add items to room 4
-        r4.addItem("brew_rig", "Gourd is brewing some sort of oatmeal stout on the brew rig. A 6-pack is resting beside it.")
+        r4.addItem("green door", "It is green. ")
+        r4.addItem("blue door", "It is blue. ")
+        r4.addItem("red door", "It is red. ")
+
         # set room 1 as the current room at the beginning of the game
         Game.currentRoom = r1
-# initialize the player's inventory
+        #initialize the player's inventory
         Game.inventory = []
-# sets up the GUI
+        
+    #sets up the GUI
     def setupGUI(self):
         self.pack(fill=BOTH, expand=1)
 
@@ -168,41 +167,42 @@ class Game(Frame):
         text_frame.pack(side=RIGHT, fill=Y)
         text_frame.pack_propagate(False)
 
-# set the current room image
+    #set the current room image
     def setRoomImage(self):
         if(Game.currentRoom == None):
-# if dead, set the skull image
+            #if dead, set the skull image
             Game.img = PhotoImage(file="skull.gif")
         else:
-# otherwise grab the image for the current room
+            #otherwise grab the image for the current room
             Game.img = PhotoImage(file=Game.currentRoom.image)
-# display the image on the left of the GUI
+            #display the image on the left of the GUI
             Game.image.config(image=Game.img)
             Game.image.image = Game.img
 
-# sets the status displayed on the right of the GUI
+    #sets the status displayed on the right of the GUI
     def setStatus(self, status):
         Game.text.config(state=NORMAL)
         Game.text.delete("1.0", END)
         if (Game.currentRoom == None):
-# if dead, let the player know
+        #if dead, let the player know
             Game.text.insert(END, "You are dead. The only thing you can do now is quit.\n")
         else:
-# otherwise, display the appropriate status
+            #otherwise, display the appropriate status
             Game.text.insert(END, str(Game.currentRoom) +\
                 "\nYou are carrying: " + str(Game.inventory) +\
                     "\n\n" + status)
             Game.text.config(state=DISABLED)
-# play the game
+    #play the game
     def play(self):
-# add the rooms to the game
+        #add the rooms to the game
         self.createRooms()
-# configure the GUI
+        #configure the GUI
         self.setupGUI()
-# set the current room
+        #set the current room
         self.setRoomImage()
-# set the current status
-        self.setStatus("You")
+        #set the current status
+        self.setStatus("You received a cryptic letter from your late      grandfather instructing you to come to his        mansion. "\
+            "Unsure of what you will discover, you    venture into the kitchen.")
 
     def process(self, event):
         action = Game.player_input.get()
@@ -214,49 +214,79 @@ class Game(Frame):
             exit(0)
 
         if (Game.currentRoom == None):
-# clear the player's input
+            #clear the player's input
             Game.player_input.delete(0, END)
             return
 
         words = action.split()
 
         if (len(words) == 2):
-# isolate the verb and noun
+            #isolate the verb and noun
             verb = words[0]
             noun = words[1]
+    
             if (verb == "go"):
-# set a default response
+                #set a default response
                 response = "Invalid exit."
                 if (noun in Game.currentRoom.exits):
                     Game.currentRoom =\
                     Game.currentRoom.exits[noun]
-# set the response (success)
+                    #set the response (success)
                     response = "Room changed."
-# the verb is: look
-            elif (verb == "look"):
-# set a default response
-                response = "I don't see that item."
-# check for valid items in the current room
-                if (noun in Game.currentRoom.items):
-# if one is found, set the response to the
-# item's description
-                    response = Game.currentRoom.items[noun]
-# the verb is: take
             elif (verb == "take"):
-# set a default response
+                #set a default response
                 response = "I don't see that item."
-# check for valid grabbable items in the current
-# room
+                #check for valid grabbable items in the current room
                 for grabbable in Game.currentRoom.grabbables:
-# a valid grabbable item is found
-                    if (noun == grabbable):
-# add the grabbable item to the player's inventory
+                    #a valid grabbable item is found
+                    if (noun == grabbable): 
+                        #add the grabbable item to the player's inventory
                         Game.inventory.append(grabbable)
-# remove the grabbable item from the room
+                        #remove the grabbable item from the room
                         Game.currentRoom.delGrabbable(grabbable)
-# set the response (success)
+                        #set the response (success)
+                        response = "Item grabbed."
+                        #no need to check any more grabbable items
+                        break
+            #the verb is: look
+            elif (verb == "look"):
+                #set a default response
+                response = "I don't see that item."
+                #check for valid items in the current room
+                if (noun in Game.currentRoom.items):
+                    #if one is found, set the response to the item's description
+                    response = Game.currentRoom.items[noun]
+            #verb is read
+            elif (verb == "read"):
+                response = "This item cannot be read."
+                if (noun == "paper"):
+                #this is a clue instructing the user to go to the library (room 2)
+                    response = "Begin your search with the books. "
+                elif(noun == "green_book"):
+                    response = ("To your amazement, you find the book contains no pages, but rather a golden key.")
+                elif (noun == "blue_book" or "red_book"):
+                    response = ("The words are written in another language that you cannot understand")
+                
+            #the verb is: use
+            elif (verb == "use"):
+                response = "This item cannot be used."
+                if (Game.currentRoom == r4):
+                    if (noun == "key"):
+                        response = ("You have found the treasure and made your         grandfather proud!"
+                        "Congratulations!")
+                #set a default response
+                #check for valid grabbable items in the current room
+                for grabbable in Game.currentRoom.grabbables:
+                    #a valid grabbable item is found
+                    if (noun == grabbable):
+                        #add the grabbable item to the player's inventory
+                        Game.inventory.append(grabbable)
+                        #remove the grabbable item from the room
+                        Game.currentRoom.delGrabbable(grabbable)
+                        #set the response (success)
                         response = "Item grabbed."
                         break
+            
 # display the response on the right of the GUI
 # display the room's image on the left of the GUI
 # clear the player's input
