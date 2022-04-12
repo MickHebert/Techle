@@ -105,12 +105,12 @@ class Game(Frame):
         # add grabbables to room 1
         r1.addGrabbable("paper")
         # add items to room 1
-        r1.addItem("apron", "The apron is covered in stains, someone must have cooked alot with this. There is something in the pocket.")
+        r1.addItem("apron", "The apron is covered in stains, someone must have cooked a lot with this. There is something in the pocket.")
         r1.addItem("pocket", "The pocket contains a crumpled piece of paper.")
         r1.addItem("oven", "It is black and rusty.")
         # add exits to room 2
         r2.addExit("west", r1)
-        r2.addExit("south", r4)
+        #r2.addExit("south", r4)  # as there is only one entrance into most basements, the south exit for room 2 has been removed
         #add grabbables to room 2
         r2.addGrabbable("red_book")
         r2.addGrabbable("green_book")
@@ -129,11 +129,11 @@ class Game(Frame):
         # add grabbables to room 3
         r3.addGrabbable("statue")
         # add items to room 3
-        r3.addItem("statue", "It is in the likeness of a man on as set of stairs, and he points downwards.")
+        r3.addItem("statue", "It is in the likeness of a man on as set of stairs; he points downwards.")
         r3.addItem("fireplace", "It is full of ashes.")
         # add exits to room 4
-        r4.addExit("northeast", r2)
-        r4.addExit("northwest", r3)
+        #r4.addExit("northeast", r2)
+        r4.addExit("up", r3)  # up since there is a staircase upwards
         r4.addExit("south", None) # DEATH!
         # add items to room 4
         r4.addItem("green door", "It is green. ")
@@ -209,7 +209,7 @@ class Game(Frame):
     def process(self, event):
         action = Game.player_input.get()
         action = action.lower()
-        response = "I don't understand. Try verb noun. Valid verbs are go, look, and take"
+        response = "I don't understand. Try verb noun. Valid verbs are go, look, use, and take"
 
         if (action == "quit" or action == "exit" or action == "bye"\
             or action == "sionara!"):
@@ -265,7 +265,7 @@ class Game(Frame):
                 #this is a clue instructing the user to go to the library (room 2)
                     response = "Begin your search with the books. "
                 elif(noun == "green_book"):
-                    response = ("To your amazement, you find the book contains no pages, but rather a golden key.")
+                    response = ("To your amazement, you find the book contains no pages, but a golden key. Perhaps you should use it on something...")
                 elif (noun == "blue_book" or "red_book"):
                     response = ("The words are written in another language that you cannot understand")
                 
@@ -274,7 +274,7 @@ class Game(Frame):
                 response = "This item cannot be used."
                 if (Game.currentRoom == r4):
                     if (noun == "key"):
-                        response = ("You have found the treasure and made your         grandfather proud!"
+                        response = ("You open the door and see a room full of treasure!         You have made your grandfather proud!"
                         "Congratulations!")
                 #set a default response
                 #check for valid grabbable items in the current room
