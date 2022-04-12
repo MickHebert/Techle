@@ -6,6 +6,8 @@
 from tkinter import *
 
 # Game Story: You are on a search for grandpa's treasure after his death.
+# To Win: look apron, look pocket, take paper, read paper, go east (library),
+# read green_book, take key, go west, go south (study), look statue, go down, use key
 
 # the room class
 class Room:
