@@ -3,6 +3,7 @@
 from tkinter import *
 from enchant import Dict
 import urllib.request
+import RPi.GPIO as GPIO
 
 dictionary = Dict("en_US")
 
@@ -353,33 +354,39 @@ def Guessgetter(entry):
     global tries
     global q
 
-    q = 0
+    #q = 0
     
-    while q < 5:
+    # Resets LEDs before displaying new pattern
+    for a in range(len(blue)):  # len(blue) as all LED lists are the same length
+        greenLight(green[a], False)
+        yellowLight(red[a], green[a], False)
+        whiteLight(red[a], green[a], blue[a], False)
 
+    #while q < 5:
+    for q in range(0,5):
         print ("none")
     
         # for green letters
-        #if guesslist[q] == wordlist[q]:
-
+        if guesslist[q] == wordlist[q]:
+            greenLight(green[q], True)
             #label1 = Label(text=(guesslist[q]), bg="dark gray", fg="green")
             #label1.grid(row=i, column=q + 3)
 
         # for yellow letters, refers to true() for calculations
-        #elif true() == True:
-            
+        elif true() == True:
+            yellowLight(red[q], green[q], True)
             #label1 = Label(text=(guesslist[q]), bg="dark gray", fg="yellow")
             #label1.grid(row=i, column=q + 3)
 
         # grey letters
-        #else:
-            
+        else:
+            whiteLight(red[q], green[q], blue[q], True)
 
             #label1 = Label(text=(guesslist[q]), bg="dark gray", fg="black")
             #label1.grid(row=i, column=q + 3)
 
         # selects next letter
-        q += 1
+        #q += 1
 
     # increases column
     i += 2
@@ -443,10 +450,37 @@ def destroyfunction():
     # creates new window
     frame()
 
+
+# LED functions for yellow, green, and white lights
+
+def  yellowLight(red, green, boolean):
+    GPIO.output(red, boolean)
+    GPIO.output(green, boolean)
+
+def greenLight(green, boolean):
+    GPIO.output(green, boolean)
+
+def whiteLight(red, green, blue, boolean):
+    GPIO.output(red, boolean)
+    GPIO.output(green, boolean)
+    GPIO.output(blue, boolean)
+
+
 ##################################################################
 ######IF YOU WANT THE WORD TO BE RANDOM THEN MAKE IT TRUE######
 
 ######THE WORD YOU ARE GUESSING #####
+
+# GPIO Initialization
+GPIO.setmode(GPIO.BCM)
+
+red = [5, 6, 12, 13, 16]
+green = [17, 18, 19, 20, 21]
+blue = [22, 23, 24, 25, 26]
+
+GPIO.setup(red, GPIO.OUT)
+GPIO.setup(green, GPIO.OUT)
+GPIO.setup(blue, GPIO.OUT)
 
 # url that has 10000 random words
 word_url = "https://www.mit.edu/~ecprice/wordlist.10000"
@@ -469,3 +503,5 @@ else:
     word = ""
 
 frame()
+
+GPIO.cleanup()
