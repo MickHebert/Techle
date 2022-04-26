@@ -1,4 +1,4 @@
-# Written by Zayne
+# Techle written by Zayne and Ruth, LED support written by Michael
 
 from tkinter import *
 from enchant import Dict
