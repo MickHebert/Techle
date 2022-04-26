@@ -4,10 +4,9 @@ from tkinter import *
 from enchant import Dict
 import urllib.request
 import RPi.GPIO as GPIO
+import random
 
 dictionary = Dict("en_US")
-
-import random
 
 ############################################################################################################
 
@@ -32,260 +31,43 @@ def frame():
 
 def keyboard():
 #Keyboard
-    # 1st row
-    # q
-    img = PhotoImage(file="images/q.gif")
-    button = Button(bg="white", image=img,
+    # 1st row letters list
+    firstRowList = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "backspace"]
+    # initializes first row of keyboard
+    for i in range(len(firstRowList)):
+        img = PhotoImage(file=f"images/{firstRowList[i]}.gif")
+        button = Button(bg="white", image=img,
                     borderwidth=0, highlightthickness=0,
                     activebackground="white", command=lambda:
-                    (process("q")))
-    button.image = img
-    button.grid(row=3, column=0, sticky=N+S+E+W)
-    # w
-    img = PhotoImage(file="images/w.gif")
-    button = Button(bg="white", image=img,
-                    borderwidth=0, highlightthickness=0,
-                    activebackground="white", command=lambda:
-                process("w"))
-    button.image = img
-    button.grid(row=3, column=1, sticky=N+S+E+W)
+                    (process(f"{firstRowList[i]}")))
+        button.image = img
+        button.grid(row=3, column=i, sticky=N+S+E+W)
+    
+    #2nd row letters list
+    secondRowList = ["a", "s", "d", "f", "g", "h", "j", "k", "l", "enter"]
+    # initializes 2nd row of keyboard
+    for i in range(len(secondRowList)):
 
-    # e
-    img = PhotoImage(file="images/e.gif")
-    button = Button(bg="white", image=img,
-                    borderwidth=0, highlightthickness=0,
-                    activebackground="white", command=lambda:
-                process("e"))
-    button.image = img
-    button.grid(row=3, column=2, sticky=N+S+E+W)
-
-    # r
-    img = PhotoImage(file="images/r.gif")
-    button = Button(bg="white", image=img,
+        img = PhotoImage(file=f"images/{secondRowList[i]}.gif")
+        button = Button(bg="white", image=img,
                         borderwidth=0, highlightthickness=0,
                         activebackground="white", command=lambda:
-                    (process("r")))
-    button.image = img
-    button.grid(row=3, column=3, sticky=N+S+E+W)
-
-    #t
-    img = PhotoImage(file="images/t.gif")
-    button = Button(bg="white", image=img,
-                        borderwidth=0, highlightthickness=0,
-                        activebackground="white", command=lambda:
-                    process("t"))
-    button.image = img
-    button.grid(row=3, column=4, sticky=N+S+E+W)
-
-    #y
-    img = PhotoImage(file="images/y.gif")
-    button = Button(bg="white", image=img,
-                        borderwidth=0, highlightthickness=0,
-                        activebackground="white", command=lambda:
-                    process("y"))
-    button.image = img
-    button.grid(row=3, column=5, sticky=N+S+E+W)
-
-    #u
-    img = PhotoImage(file="images/u.gif")
-    button = Button(bg="white", image=img,
-                        borderwidth=0, highlightthickness=0,
-                        activebackground="white", command=lambda:
-                    process("u"))
-    button.image = img
-    button.grid(row=3, column=6, sticky=N+S+E+W)
-
-    #i
-    img = PhotoImage(file="images/i.gif")
-    button = Button(bg="white", image=img,
-                        borderwidth=0, highlightthickness=0,
-                        activebackground="white", command=lambda:
-                    process("i"))
-    button.image = img
-    button.grid(row=3, column=7, sticky=N+S+E+W)
-
-    #o
-    img = PhotoImage(file="images/o.gif")
-    button = Button(bg="white", image=img,
-                        borderwidth=0, highlightthickness=0,
-                        activebackground="white", command=lambda:
-                    process("o"))
-    button.image = img
-    button.grid(row=3, column=8, sticky=N+S+E+W)
-
-    #p
-    img = PhotoImage(file="images/p.gif")
-    button = Button(bg="white", image=img,
-                        borderwidth=0, highlightthickness=0,
-                        activebackground="white", command=lambda:
-                    process("p"))
-    button.image = img
-    button.grid(row=3, column=9, sticky=N+S+E+W)
-
-    #backspace
-    img = PhotoImage(file="images/backspace.gif")
-    button = Button(bg="white", image=img,
-                        borderwidth=0, highlightthickness=0,
-                        activebackground="white", command=lambda:
-                    process("back"))
-    button.image = img
-    button.grid(row=3, column=10, sticky=N+S+E+W)
-
-    #2nd row
+                    process(f"{secondRowList[i]}"))
+        button.image = img
+        button.grid(row=4, column=i, sticky=N+S+E+W)
         
-    #a
-    img = PhotoImage(file="images/a.gif")
-    button = Button(bg="white", image=img,
+    #3rd row letters list
+    thirdRowList = ["z", "x", "c", "v", "b", "n", "m"]
+    # initializes 3rd row of keyboard
+    for i in range(len(thirdRowList)):
+        img = PhotoImage(file=f"images/{thirdRowList[i]}.gif")
+        button = Button(bg="white", image=img,
                         borderwidth=0, highlightthickness=0,
                         activebackground="white", command=lambda:
-                    process("a"))
-    button.image = img
-    button.grid(row=4, column=0, sticky=N+S+E+W)
-        
-    #s
-    img = PhotoImage(file="images/s.gif")
-    button = Button(bg="white", image=img,
-                        borderwidth=0, highlightthickness=0,
-                        activebackground="white", command=lambda:
-                        process("s"))
-    button.image = img
-    button.grid(row=4, column=1, sticky=N+S+E+W)
-        
-    #d
-    img = PhotoImage(file="images/d.gif")
-    button = Button(bg="white", image=img,
-                        borderwidth=0, highlightthickness=0,
-                        activebackground="white", command=lambda:
-                    process("d"))
-    button.image = img
-    button.grid(row=4, column=2, sticky=N+S+E+W)
-        
-    #f
-    img = PhotoImage(file="images/f.gif")
-    button = Button(bg="white", image=img,
-                        borderwidth=0, highlightthickness=0,
-                        activebackground="white", command=lambda:
-                    process("f"))
-    button.image = img
-    button.grid(row=4, column=3, sticky=N+S+E+W)
-
-    #g
-    img = PhotoImage(file="images/g.gif")
-    button = Button(bg="white", image=img,
-                        borderwidth=0, highlightthickness=0,
-                        activebackground="white", command=lambda:
-                    process("g"))
-    button.image = img
-    button.grid(row=4, column=4, sticky=N+S+E+W)
-
-    #h
-    img = PhotoImage(file="images/h.gif")
-    button = Button(bg="white", image=img,
-                        borderwidth=0, highlightthickness=0,
-                        activebackground="white", command=lambda:
-                    process("h"))
-    button.image = img
-    button.grid(row=4, column=5, sticky=N+S+E+W)
-
-    #j
-    img = PhotoImage(file="images/j.gif")
-    button = Button(bg="white", image=img,
-                        borderwidth=0, highlightthickness=0,
-                        activebackground="white", command=lambda:
-                    process("j"))
-    button.image = img
-    button.grid(row=4, column=6, sticky=N+S+E+W)
+                    process(f"{thirdRowList[i]}"))
+        button.image = img
+        button.grid(row=5, column=i+1, sticky=N+S+E+W)
                         
-    #k
-    img = PhotoImage(file="images/k.gif")
-    button = Button(bg="white", image=img,
-                        borderwidth=0, highlightthickness=0,
-                        activebackground="white", command=lambda:
-                    process("k"))
-    button.image = img
-    button.grid(row=4, column=7, sticky=N+S+E+W)
-
-    #l
-    img = PhotoImage(file="images/l.gif")
-    button = Button(bg="white", image=img,
-                        borderwidth=0, highlightthickness=0,
-                        activebackground="white", command=lambda:
-                    process("l"))
-    button.image = img
-    button.grid(row=4, column=8, sticky=N+S+E+W)
-
-    #enter
-    img = PhotoImage(file="images/enter.gif")
-    button = Button(bg="white", image=img,
-                        borderwidth=0, highlightthickness=0,
-                        activebackground="white", command= lambda: test())
-    button.image = img
-    button.grid(row=4, column=9, sticky=N+S+E+W)
-                    
-    #3rd Row
-        
-    # z
-    img = PhotoImage(file="images/z.gif")
-    button = Button(bg="white", image=img,
-                        borderwidth=0, highlightthickness=0,
-                        activebackground="white", command=lambda:
-                    process("z"))
-    button.image = img
-    button.grid(row=5, column=1, sticky=N+S+E+W)
-                        
-    # x
-    img = PhotoImage(file="images/x.gif")
-    button = Button(bg="white", image=img,
-                        borderwidth=0, highlightthickness=0,
-                        activebackground="white", command=lambda:
-                    process("x"))
-    button.image = img
-    button.grid(row=5, column=2, sticky=N+S+E+W)
-
-    # c
-    img = PhotoImage(file="images/c.gif")
-    button = Button(bg="white", image=img,
-                        borderwidth=0, highlightthickness=0,
-                        activebackground="white", command=lambda:
-                    process("c"))
-    button.image = img
-    button.grid(row=5, column=3, sticky=N+S+E+W)
-    # v
-    img = PhotoImage(file="images/v.gif")
-    button = Button(bg="white", image=img,
-                        borderwidth=0, highlightthickness=0,
-                        activebackground="white", command=lambda:
-                    process("v"))
-    button.image = img
-    button.grid(row=5, column=4, sticky=N+S+E+W)
-
-    # b
-    img = PhotoImage(file="images/b.gif")
-    button = Button(bg="white", image=img,
-                        borderwidth=0, highlightthickness=0,
-                        activebackground="white", command=lambda:
-                    process("b"))
-    button.image = img
-    button.grid(row=5, column=5, sticky=N+S+E+W)
-
-    # n
-    img = PhotoImage(file="images/n.gif")
-    button = Button(bg="white", image=img,
-                        borderwidth=0, highlightthickness=0,
-                        activebackground="white", command=lambda:
-                    process("n"))
-    button.image = img
-    button.grid(row=5, column=6, sticky=N+S+E+W)
-
-    # m
-    img = PhotoImage(file="images/m.gif")
-    button = Button(bg="white", image=img,
-                        borderwidth=0, highlightthickness=0,
-                        activebackground="white", command=lambda:
-                    process("m"))
-    button.image = img
-    button.grid(row=5, column=7, sticky=N+S+E+W)
-
 #takes the input of buttons
 def process(button):
     
@@ -353,8 +135,6 @@ def Guessgetter(entry):
     global i
     global tries
     global q
-
-    #q = 0
     
     # Resets LEDs before displaying new pattern
     for a in range(len(blue)):  # len(blue) as all LED lists are the same length
@@ -362,31 +142,20 @@ def Guessgetter(entry):
         yellowLight(red[a], green[a], False)
         whiteLight(red[a], green[a], blue[a], False)
 
-    #while q < 5:
     for q in range(0,5):
         print ("none")
     
         # for green letters
         if guesslist[q] == wordlist[q]:
             greenLight(green[q], True)
-            #label1 = Label(text=(guesslist[q]), bg="dark gray", fg="green")
-            #label1.grid(row=i, column=q + 3)
 
         # for yellow letters, refers to true() for calculations
         elif true() == True:
             yellowLight(red[q], green[q], True)
-            #label1 = Label(text=(guesslist[q]), bg="dark gray", fg="yellow")
-            #label1.grid(row=i, column=q + 3)
 
         # grey letters
         else:
             whiteLight(red[q], green[q], blue[q], True)
-
-            #label1 = Label(text=(guesslist[q]), bg="dark gray", fg="black")
-            #label1.grid(row=i, column=q + 3)
-
-        # selects next letter
-        #q += 1
 
     # increases column
     i += 2
@@ -452,6 +221,7 @@ def destroyfunction():
 
 
 # LED functions for yellow, green, and white lights
+##################################################################
 
 def  yellowLight(red, green, boolean):
     GPIO.output(red, boolean)
@@ -464,7 +234,6 @@ def whiteLight(red, green, blue, boolean):
     GPIO.output(red, boolean)
     GPIO.output(green, boolean)
     GPIO.output(blue, boolean)
-
 
 ##################################################################
 ######IF YOU WANT THE WORD TO BE RANDOM THEN MAKE IT TRUE######
