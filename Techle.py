@@ -1,0 +1,547 @@
+from tkinter import *
+import RPi.GPIO as GPIO
+import random
+
+#tries
+tries = 1
+#index of guesslist and wordlist
+j = 1
+# the possible words to guess
+words = ["champ", "doggy", "adams", "potts", "guice", "loyal", "brick", "tenet", "pride", "plaza", "lomax", "reese", "clock", "tower", "keeny"]
+#picks the word to guess randomly
+def randomwordgen():
+    global word
+    
+    word = random.choice(words)
+    print (word)
+
+############################################################################################################
+#the instructions
+def instruction():
+    global rule
+    GPIO.setmode(GPIO.BCM)
+    #creates the window
+    rule = Tk()
+    rule.title("Techle Instructions")
+    rule.geometry("1350x490")
+    rule.configure(bg = "white", bd = 10, highlightbackground = "red",
+                   highlightcolor = "red", highlightthickness = 4)
+
+    #the instruction label
+    ruleslabel = Label (text = "Welcome to Techle!\n\
+In this game you will try to guess a random Tech-related word.\n\
+The LED's seen represent the letters. If an LED is white that letter is not present.\n\
+If an LED is yellow, that letter is present. If an LED is green, that letter is present and in the correct spot.",
+                        bg = "white", font = ("Microsoft Jhenghei", 10))
+    ruleslabel.place(relx = 0.5, rely = 0.5, anchor = CENTER)
+
+    #continue to the game
+    continuebutton = Button (text = "Click to play!", command = lambda: (newframefunc()))
+    continuebutton.place(relx = 0.5, rely = 0.8, anchor = CENTER)
+
+#################################################################
+#destroy the instruction frame and initiate the keyboard frame
+def newframefunc():
+    rule.destroy()
+    frame()
+
+#################################################################
+# creates the keyboard frame
+def frame():
+    global window
+
+    window = Tk()
+    window.title("Techle")
+    window.geometry("1350x490")
+    window.configure(bg = "white", bd = 10, highlightbackground = "blue",
+                   highlightcolor = "blue", highlightthickness = 20)
+
+    #the label that the keyboard outputs to
+    global label1
+    
+    label1 = Label (text = "", bg="white", font = ("Times New Roman", 20))
+    label1.grid(row=0, rowspan = 2, column=0, sticky=N + S + E + W)
+
+    #the label that the guesses are stored
+    global label4
+    
+    label4 = Label(bg = "white", fg ="black", font=("Times New Roman", 30))
+    label4.grid(row = 2, columnspan = 10)
+
+    label4["text"] += '| '
+
+    #initiates the keyboard
+    keyboard()
+        
+######################################################################
+#Keyboard
+def keyboard():
+#Keyboard
+    # 1st row
+    # q
+    img = PhotoImage(file="images/q.gif")
+    button = Button(bg="white", image=img,
+                    borderwidth=0, highlightthickness=0,
+                    activebackground="white", command=lambda:
+                    (process("q")))
+    button.image = img
+    button.grid(row=3, column=0, sticky=N+S+E+W)
+    # w
+    img = PhotoImage(file="images/w.gif")
+    button = Button(bg="white", image=img,
+                    borderwidth=0, highlightthickness=0,
+                    activebackground="white", command=lambda:
+                process("w"))
+    button.image = img
+    button.grid(row=3, column=1, sticky=N+S+E+W)
+
+    # e
+    img = PhotoImage(file="images/e.gif")
+    button = Button(bg="white", image=img,
+                    borderwidth=0, highlightthickness=0,
+                    activebackground="white", command=lambda:
+                process("e"))
+    button.image = img
+    button.grid(row=3, column=2, sticky=N+S+E+W)
+
+    # r
+    img = PhotoImage(file="images/r.gif")
+    button = Button(bg="white", image=img,
+                        borderwidth=0, highlightthickness=0,
+                        activebackground="white", command=lambda:
+                    (process("r")))
+    button.image = img
+    button.grid(row=3, column=3, sticky=N+S+E+W)
+
+    #t
+    img = PhotoImage(file="images/t.gif")
+    button = Button(bg="white", image=img,
+                        borderwidth=0, highlightthickness=0,
+                        activebackground="white", command=lambda:
+                    process("t"))
+    button.image = img
+    button.grid(row=3, column=4, sticky=N+S+E+W)
+
+    #y
+    img = PhotoImage(file="images/y.gif")
+    button = Button(bg="white", image=img,
+                        borderwidth=0, highlightthickness=0,
+                        activebackground="white", command=lambda:
+                    process("y"))
+    button.image = img
+    button.grid(row=3, column=5, sticky=N+S+E+W)
+
+    #u
+    img = PhotoImage(file="images/u.gif")
+    button = Button(bg="white", image=img,
+                        borderwidth=0, highlightthickness=0,
+                        activebackground="white", command=lambda:
+                    process("u"))
+    button.image = img
+    button.grid(row=3, column=6, sticky=N+S+E+W)
+
+    #i
+    img = PhotoImage(file="images/i.gif")
+    button = Button(bg="white", image=img,
+                        borderwidth=0, highlightthickness=0,
+                        activebackground="white", command=lambda:
+                    process("i"))
+    button.image = img
+    button.grid(row=3, column=7, sticky=N+S+E+W)
+
+    #o
+    img = PhotoImage(file="images/o.gif")
+    button = Button(bg="white", image=img,
+                        borderwidth=0, highlightthickness=0,
+                        activebackground="white", command=lambda:
+                    process("o"))
+    button.image = img
+    button.grid(row=3, column=8, sticky=N+S+E+W)
+
+    #p
+    img = PhotoImage(file="images/p.gif")
+    button = Button(bg="white", image=img,
+                        borderwidth=0, highlightthickness=0,
+                        activebackground="white", command=lambda:
+                    process("p"))
+    button.image = img
+    button.grid(row=3, column=9, sticky=N+S+E+W)
+
+    #backspace
+    img = PhotoImage(file="images/backspace.gif")
+    button = Button(bg="white", image=img,
+                        borderwidth=0, highlightthickness=0,
+                        activebackground="white", command=lambda:
+                    process("back"))
+    button.image = img
+    button.grid(row=3, column=10, sticky=N+S+E+W)
+
+    #2nd row
+
+    #a
+    img = PhotoImage(file="images/a.gif")
+    button = Button(bg="white", image=img,
+                        borderwidth=0, highlightthickness=0,
+                        activebackground="white", command=lambda:
+                    process("a"))
+    button.image = img
+    button.grid(row=4, column=0, sticky=N+S+E+W)
+
+    #s
+    img = PhotoImage(file="images/s.gif")
+    button = Button(bg="white", image=img,
+                        borderwidth=0, highlightthickness=0,
+                        activebackground="white", command=lambda:
+                        process("s"))
+    button.image = img
+    button.grid(row=4, column=1, sticky=N+S+E+W)
+
+    #d
+    img = PhotoImage(file="images/d.gif")
+    button = Button(bg="white", image=img,
+                        borderwidth=0, highlightthickness=0,
+                        activebackground="white", command=lambda:
+                    process("d"))
+    button.image = img
+    button.grid(row=4, column=2, sticky=N+S+E+W)
+
+    #f
+    img = PhotoImage(file="images/f.gif")
+    button = Button(bg="white", image=img,
+                        borderwidth=0, highlightthickness=0,
+                        activebackground="white", command=lambda:
+                    process("f"))
+    button.image = img
+    button.grid(row=4, column=3, sticky=N+S+E+W)
+
+    #g
+    img = PhotoImage(file="images/g.gif")
+    button = Button(bg="white", image=img,
+                        borderwidth=0, highlightthickness=0,
+                        activebackground="white", command=lambda:
+                    process("g"))
+    button.image = img
+    button.grid(row=4, column=4, sticky=N+S+E+W)
+
+    #h
+    img = PhotoImage(file="images/h.gif")
+    button = Button(bg="white", image=img,
+                        borderwidth=0, highlightthickness=0,
+                        activebackground="white", command=lambda:
+                    process("h"))
+    button.image = img
+    button.grid(row=4, column=5, sticky=N+S+E+W)
+
+    #j
+    img = PhotoImage(file="images/j.gif")
+    button = Button(bg="white", image=img,
+                        borderwidth=0, highlightthickness=0,
+                        activebackground="white", command=lambda:
+                    process("j"))
+    button.image = img
+    button.grid(row=4, column=6, sticky=N+S+E+W)
+
+    #k
+    img = PhotoImage(file="images/k.gif")
+    button = Button(bg="white", image=img,
+                        borderwidth=0, highlightthickness=0,
+                        activebackground="white", command=lambda:
+                    process("k"))
+    button.image = img
+    button.grid(row=4, column=7, sticky=N+S+E+W)
+
+    #l
+    img = PhotoImage(file="images/l.gif")
+    button = Button(bg="white", image=img,
+                        borderwidth=0, highlightthickness=0,
+                        activebackground="white", command=lambda:
+                    process("l"))
+    button.image = img
+    button.grid(row=4, column=8, sticky=N+S+E+W)
+
+    #enter
+    img = PhotoImage(file="images/enter.gif")
+    button = Button(bg="white", image=img,
+                        borderwidth=0, highlightthickness=0,
+                        activebackground="white", command= lambda: test())
+    button.image = img
+    button.grid(row=4, column=9, sticky=N+S+E+W)
+
+    #3rd Row
+
+    # z
+    img = PhotoImage(file="images/z.gif")
+    button = Button(bg="white", image=img,
+                        borderwidth=0, highlightthickness=0,
+                        activebackground="white", command=lambda:
+                    process("z"))
+    button.image = img
+    button.grid(row=5, column=1, sticky=N+S+E+W)
+
+    # x
+    img = PhotoImage(file="images/x.gif")
+    button = Button(bg="white", image=img,
+                        borderwidth=0, highlightthickness=0,
+                        activebackground="white", command=lambda:
+                    process("x"))
+    button.image = img
+    button.grid(row=5, column=2, sticky=N+S+E+W)
+
+    # c
+    img = PhotoImage(file="images/c.gif")
+    button = Button(bg="white", image=img,
+                        borderwidth=0, highlightthickness=0,
+                        activebackground="white", command=lambda:
+                    process("c"))
+    button.image = img
+    button.grid(row=5, column=3, sticky=N+S+E+W)
+    # v
+    img = PhotoImage(file="images/v.gif")
+    button = Button(bg="white", image=img,
+                        borderwidth=0, highlightthickness=0,
+                        activebackground="white", command=lambda:
+                    process("v"))
+    button.image = img
+    button.grid(row=5, column=4, sticky=N+S+E+W)
+
+    # b
+    img = PhotoImage(file="images/b.gif")
+    button = Button(bg="white", image=img,
+                        borderwidth=0, highlightthickness=0,
+                        activebackground="white", command=lambda:
+                    process("b"))
+    button.image = img
+    button.grid(row=5, column=5, sticky=N+S+E+W)
+
+    # n
+    img = PhotoImage(file="images/n.gif")
+    button = Button(bg="white", image=img,
+                        borderwidth=0, highlightthickness=0,
+                        activebackground="white", command=lambda:
+                    process("n"))
+    button.image = img
+    button.grid(row=5, column=6, sticky=N+S+E+W)
+
+    # m
+    img = PhotoImage(file="images/m.gif")
+    button = Button(bg="white", image=img,
+                        borderwidth=0, highlightthickness=0,
+                        activebackground="white", command=lambda:
+                    process("m"))
+    button.image = img
+    button.grid(row=5, column=7, sticky=N+S+E+W)
+
+    #the hint button
+    hintbutton = Button(text = "Hint", bg = "white", bd = 10,
+                        highlightbackground = "black", font = ("Microsoft Jhenghei", 20),
+                        highlightcolor = "black", highlightthickness = 4, command = lambda: hint())
+    hintbutton.grid(row = 5, column = 8, sticky = N+S+E+W)
+
+def hint():
+    global label0
+    
+    label0 = Label(text=f"The first letter is {word[0]}, the middle letter is {word[2]},\
+ and the last letter is {word[4]}.",bg="dark gray", fg="black",
+                   bd = 10, font=("Times New Roman", 20))
+    label0.place(relx=0.5, rely=0.5, anchor=CENTER)
+
+    # after 3 seconds destroy the label
+    window.after(4000, destroy_label3)
+    
+##################################################################
+#takes the input of buttons
+def process(button):
+    
+    if button == "back":
+        display = label1["text"]
+        backtext = (display)[:-1]
+        label1["text"] = backtext
+    elif button == "erase":
+        label1["text"] = ""
+    else:
+        label1["text"] += button
+
+###############################################################################
+def test():
+    # globals
+    global guesslist
+    global guess
+
+    # takes the input from the entry and assigns it as your guess
+    guess = label1["text"]
+
+    # turns your guess into a list
+    guesslist = list(guess)
+
+    # if the left of your guess is not 5 letters or a real word
+    if len(guesslist) > 5 or len(guesslist) < 5:
+
+        global label2
+
+        label2 = Label(text="Your guess has to be 5 letters long and a real word.",
+                       bg="dark gray", fg="black", bd = 10, font=("Times New Roman", 30))
+        label2.place(relx=0.5, rely=0.5, anchor=CENTER)
+
+        # after 3 seconds destroy the label
+        window.after(3000, destroy_label)
+
+    else:
+        #initiates the matching of the letters
+        Guessgetter(guesslist)
+
+        #erases the ouput of the keyboard for a new guess
+        process("erase")
+
+##################################################################
+#destroying label functions
+
+#destroys the warning label
+def destroy_label():
+    label2.destroy()
+
+#destroys the label in which the keyboard outputs
+def destroy_label2():
+    label1.destroy()
+
+def destroy_label3():
+    label0.destroy()
+    
+
+##################################################################
+# the main game
+def Guessgetter(guesslist):
+    # globals
+    global tries
+    global q
+    global word
+    # Resets LEDs before displaying new pattern
+    for a in range(len(blue)):  # len(blue) as all LED lists are the same length
+        greenLight(17, False)
+        yellowLight(red[a], green[a], False)
+        whiteLight(red[a], green[a], blue[a], False)
+
+    for q in range(0,5):
+        # for green letters
+        print(f"guess {guesslist[q]} word {word[q]}")
+        if guesslist[q] == word[q]:
+            print(f"guess {guesslist[q]} word {word[q]}")
+            greenLight(green[q], True)
+
+        # for yellow letters, refers to true() for calculations
+        elif true(guesslist) == True:
+            yellowLight(red[q], green[q], True)
+
+        # grey letters
+        else:
+            whiteLight(red[q], green[q], blue[q], True)
+
+    # increases tries
+    tries += 1
+
+    # if you guess the word
+    if word == guess:
+
+        Button2 = Button(text=("You got the word! Click to play again."),
+                         bg="dark gray", fg="black", bd = 10, font=("Times New Roman", 20), command=lambda: destroyfunction())
+        Button2.place(relx=0.5, rely=0.5, anchor=CENTER)
+
+        destroy_label2()
+        for a in range(len(blue)):  # len(blue) as all LED lists are the same length
+            greenLight(17, False)
+            yellowLight(red[a], green[a], False)
+            whiteLight(red[a], green[a], blue[a], False)
+
+    # if you run out of tries
+    if tries == 7:
+
+        Button2 = Button(text=("You ran out of tries. The word was {}. Click to try another word."
+                               .format(word)),
+                         bg="dark gray", fg="black", bd = 10, font=("Times New Roman", 20), command=lambda: destroyfunction())
+        Button2.place(relx=0.5, rely=0.5, anchor=CENTER)
+
+        destroy_label2()
+        for a in range(len(blue)):  # len(blue) as all LED lists are the same length
+            greenLight(17, False)
+            yellowLight(red[a], green[a], False)
+            whiteLight(red[a], green[a], blue[a], False)
+
+    global j
+    
+    label4["text"] += (guess + ' | ')
+
+##################################################################
+# calculates the placement of yellow letters
+def true(guesslist):
+    for j in range(5):
+        if guesslist[q] == word[j]:
+            return True
+            break
+
+##################################################################
+def destroyfunction():
+    # globals
+    global i
+    global tries
+
+    # resets the tries and columns
+    i = 1
+    tries = 1
+
+    # destroys window
+    window.destroy()
+
+    # chooses new word
+    randomwordgen()
+
+    # creates new window
+    frame()
+
+##################################################################
+# Initialize GPIO
+def GPIOInit():
+    red = [5, 6, 12, 13, 16]
+    green = [17, 18, 19, 20, 21]
+    blue = [22, 23, 24, 25, 26]
+
+    for i in range(len(red)):
+        GPIO.setup(red[i], GPIO.OUT)
+        GPIO.setup(green[i], GPIO.OUT)
+        GPIO.setup(blue[i], GPIO.OUT)
+
+# LED functions for yellow, green, and white lights
+##################################################################
+
+def  yellowLight(red, green, boolean):
+    GPIO.output(red, boolean)
+    GPIO.output(green, boolean)
+
+def greenLight(green, boolean):
+    GPIO.output(green, boolean)
+
+def whiteLight(red, green, blue, boolean):
+    GPIO.output(red, boolean)
+    GPIO.output(green, boolean)
+    GPIO.output(blue, boolean)
+
+##################################################################
+######IF YOU WANT THE WORD TO BE RANDOM THEN MAKE IT TRUE######
+
+######THE WORD YOU ARE GUESSING #####
+
+# GPIO Initialization #
+GPIO.setmode(GPIO.BCM)
+
+red = [5, 6, 12, 13, 16]
+green = [17, 18, 19, 20, 21]
+blue = [22, 23, 24, 25, 26]
+print("hi")
+GPIO.setup(red, GPIO.OUT)
+GPIO.setup(green, GPIO.OUT)
+GPIO.setup(blue, GPIO.OUT)
+GPIO.output(green[0], True)
+
+##################################################################
+GPIOInit()
+instruction()
+randomwordgen()
+
